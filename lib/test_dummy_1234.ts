@@ -47,11 +47,11 @@ export class BlueGreenEcsDeployStack extends cdk.Stack {
     // Define contianer images
     const imageRepo = ecr.Repository.fromRepositoryName(this, 'repo', 'randserver');
     
-    const feTag = 'fe1';
-    const imageFe = ecs.ContainerImage.fromEcrRepository(imageRepo, feTag);
+    const feTag = 'fe2';
+    const imageFe = ecs.ContainerImage.fromEcrRepository(imageRepo, feTag)
 
-    const beTag = 'be2';
-    const imageBe = ecs.ContainerImage.fromEcrRepository(imageRepo, beTag);
+    const beTag = 'be1';
+    const imageBe = ecs.ContainerImage.fromEcrRepository(imageRepo, beTag)
 
     // Set up security group to allow comunication between loadbalancer and target group
     const serviceSG = new ec2.SecurityGroup(this, 'ServiceSecurityGroup', { vpc });
@@ -74,8 +74,8 @@ export class BlueGreenEcsDeployStack extends cdk.Stack {
       targetType: elb.TargetType.IP,
       deregistrationDelay: cdk.Duration.seconds(5),
     });
-    let cfnTg1Fe = feTg1.node.defaultChild as elb.CfnTargetGroup;
-    cfnTg1Fe.overrideLogicalId('tgFeBlue');
+    let cfnTg1Fe = feTg1.node.defaultChild as elb.CfnTargetGroup
+    cfnTg1Fe.overrideLogicalId('tgFeBlue')
 
     const feTg2 = new elb.ApplicationTargetGroup(this, "tgFeGreen", {
       port: 5000,
@@ -84,8 +84,8 @@ export class BlueGreenEcsDeployStack extends cdk.Stack {
       targetType: elb.TargetType.IP,
       deregistrationDelay: cdk.Duration.seconds(5),
     });
-    let cfnTg2Fe = feTg2.node.defaultChild as elb.CfnTargetGroup;
-    cfnTg2Fe.overrideLogicalId('tgFeGreen');
+    let cfnTg2Fe = feTg2.node.defaultChild as elb.CfnTargetGroup
+    cfnTg2Fe.overrideLogicalId('tgFeGreen')
 
     // Be target groups
     
@@ -96,8 +96,8 @@ export class BlueGreenEcsDeployStack extends cdk.Stack {
       targetType: elb.TargetType.IP,
       deregistrationDelay: cdk.Duration.seconds(5),
     });
-    let cfnTg1Be = beTg1.node.defaultChild as elb.CfnTargetGroup;
-    cfnTg1Be.overrideLogicalId('tgBeBlue');
+    let cfnTg1Be = beTg1.node.defaultChild as elb.CfnTargetGroup
+    cfnTg1Be.overrideLogicalId('tgBeBlue')
 
     const beTg2 = new elb.ApplicationTargetGroup(this, "tgBeGreen", {
       port: 5000,
@@ -106,8 +106,8 @@ export class BlueGreenEcsDeployStack extends cdk.Stack {
       targetType: elb.TargetType.IP,
       deregistrationDelay: cdk.Duration.seconds(5),
     });
-    let cfnTg2Be = beTg2.node.defaultChild as elb.CfnTargetGroup;
-    cfnTg2Be.overrideLogicalId('tgBeGreen');
+    let cfnTg2Be = beTg2.node.defaultChild as elb.CfnTargetGroup
+    cfnTg2Be.overrideLogicalId('tgBeGreen')
     
 
     // Create a prod listeners and rules
@@ -176,10 +176,10 @@ export class BlueGreenEcsDeployStack extends cdk.Stack {
 
     /////// Service and task definition for frontend
 
-    const taskDefinitionFe = new ecs.FargateTaskDefinition(this, 'EcsFeTaskDef');
-    let cfnFeTD = taskDefinitionFe.node.defaultChild as ecs.CfnTaskDefinition;
-    cfnFeTD.overrideLogicalId('EcsFeTaskDef');
-
+    const taskDefinitionFe = new ecs.FargateTaskDefinition(this, 'EcsFeTaskDef-1');
+    let cfnFeTD = taskDefinitionFe.node.defaultChild as ecs.CfnTaskDefinition
+    cfnFeTD.overrideLogicalId('EcsFeTaskDef1')
+    
     const feContainer = taskDefinitionFe.addContainer('FeCustomContaioner', {
       image: imageFe,
       memoryLimitMiB: 512,
@@ -204,10 +204,10 @@ export class BlueGreenEcsDeployStack extends cdk.Stack {
 
     /////// Service and task definition for backend
     
-    const taskDefinitionBe = new ecs.FargateTaskDefinition(this, 'EcsBeTaskDef');
-    let cfnBeTD = taskDefinitionBe.node.defaultChild as ecs.CfnTaskDefinition;
-    cfnBeTD.overrideLogicalId('EcsBeTaskDef');
-
+    const taskDefinitionBe = new ecs.FargateTaskDefinition(this, 'EcsBeTaskDef-1');
+    let cfnBeTD = taskDefinitionBe.node.defaultChild as ecs.CfnTaskDefinition
+    cfnBeTD.overrideLogicalId('EcsBeTaskDef1')
+    
     const beContainer = taskDefinitionBe.addContainer('CustomBeContaioner', {
       image: imageBe,
       memoryLimitMiB: 512,
@@ -223,7 +223,7 @@ export class BlueGreenEcsDeployStack extends cdk.Stack {
     fargateBeService.node.addDependency(beTg2);
     fargateBeService.node.addDependency(prodListener);
     fargateBeService.node.addDependency(testListener);
-    fargateBeService.overrideLogicalId('fargateBeService');
+    fargateBeService.overrideLogicalId('fargateBeService')
 
     beContainer.addPortMappings({
       containerPort: 5000,
@@ -264,7 +264,6 @@ export class BlueGreenEcsDeployStack extends cdk.Stack {
       },
     });
     feTaskSet.overrideLogicalId('FeTaskSet');
-
     
     new ecs.CfnPrimaryTaskSet(this, 'FePrimaryTaskSet', {
       cluster: cluster.clusterName,
@@ -321,73 +320,70 @@ export class BlueGreenEcsDeployStack extends cdk.Stack {
     //    Once the stack update is completed, uncomment the CodeDeploy transform and hook code to re-enable
     //    blue-green deployments.
     
-    
+    */
+    /*
     const taskDefLogicalIdParam = new cdk.CfnParameter(this, "taskDefLogicalId", {
       type: "String",
-      //default: this.getLogicalId(taskDefinitionFe.node.defaultChild as ecs.CfnTaskDefinition),
-      default: "EcsFeTaskDef",
-      //default: "EcsBeTaskDef",
+      default: this.getLogicalId(taskDefinitionFe.node.defaultChild as ecs.CfnTaskDefinition),
       description: "Task definition"
     });
 
     const taskSetLogicalIdParam = new cdk.CfnParameter(this, "taskSetLogicalId", {
       type: "String",
-      //default: this.getLogicalId(feTaskSet),
-      default: "FeTaskSet",
-      //default: "BeTaskSet",
+      default: this.getLogicalId(feTaskSet),
       description: "Task set"
     });
 
     const tg1LogicalIdParam = new cdk.CfnParameter(this, "tg1LogicalId", {
       type: "String",
-      //default: this.getLogicalId(feTg1.node.defaultChild as elb.CfnTargetGroup),
-      default: "tgFeBlue",
-      //default: "tgBeBlue",
+      default: this.getLogicalId(feTg1.node.defaultChild as elb.CfnTargetGroup),
       description: "Target group 1"
     });
 
     const tg2LogicalIdParam = new cdk.CfnParameter(this, "tg2LogicalId", {
       type: "String",
-      //default: this.getLogicalId(feTg2.node.defaultChild as elb.CfnTargetGroup),
-      default: "tgFeGreen",
-      //default: "tgBeGreen",
+      default: this.getLogicalId(feTg2.node.defaultChild as elb.CfnTargetGroup),
       description: "Target group 2"
     });
 
     const serviceLogicalIdParam = new cdk.CfnParameter(this, "serviceLogicalId", {
       type: "String",
-      //default: this.getLogicalId(fargateFeService),
-      default: "fargateFeService",
-      //default: "fargateBeService",
+      default: this.getLogicalId(fargateFeService),
       description: "Service"
     });
+    */
     
+    /*
     this.addTransform('AWS::CodeDeployBlueGreen');
-
-    //const taskDefLogicalId = this.getLogicalId(taskDefinitionFe.node.defaultChild as ecs.CfnTaskDefinition);
-    const taskDefLogicalId = taskDefLogicalIdParam.valueAsString;
-    //const taskSetLogicalId = this.getLogicalId(feTaskSet);
-    const taskSetLogicalId = taskSetLogicalIdParam.valueAsString;
-    //const tg1LogicalId = this.getLogicalId(feTg1.node.defaultChild as elb.CfnTargetGroup);
-    const tg1LogicalId = tg1LogicalIdParam.valueAsString;
-    //const tg2LogicalId = this.getLogicalId(feTg2.node.defaultChild as elb.CfnTargetGroup);
-    const tg2LogicalId = tg2LogicalIdParam.valueAsString;
-    //const serviceLogicalId = this.getLogicalId(fargateFeService);
-    const serviceLogicalId = serviceLogicalIdParam.valueAsString;
-    const roleLogicalId = this.getLogicalId(glueGreenRole.node.defaultChild as iam.CfnRole);
     
+    const taskDefLogicalId = this.getLogicalId(taskDefinitionFe.node.defaultChild as ecs.CfnTaskDefinition);
+    //const taskDefLogicalId = taskDefLogicalIdParam.valueAsString;
+    const taskSetLogicalId = this.getLogicalId(feTaskSet);
+    //const taskSetLogicalId = taskSetLogicalIdParam.valueAsString;
+    //const listenerLogicalId = this.getLogicalId(prodListener.node.defaultChild as elb.CfnListener);
+    //const testListenerLogicalId = this.getLogicalId(testListener.node.defaultChild as elb.CfnListener);
+    const tg1LogicalId = this.getLogicalId(feTg1.node.defaultChild as elb.CfnTargetGroup);
+    //const tg1LogicalId = tg1LogicalIdParam.valueAsString;
+    const tg2LogicalId = this.getLogicalId(feTg2.node.defaultChild as elb.CfnTargetGroup);
+    //const tg2LogicalId = tg2LogicalIdParam.valueAsString;
+    const serviceLogicalId = this.getLogicalId(fargateFeService);
+    //const serviceLogicalId = serviceLogicalIdParam.valueAsString;
+    const roleLogicalId = this.getLogicalId(glueGreenRole.node.defaultChild as iam.CfnRole);
+
+    
+
     new cdk.CfnCodeDeployBlueGreenHook(this, 'CodeDeployBlueGreenHook', {
       trafficRoutingConfig: {
         type: cdk.CfnTrafficRoutingType.TIME_BASED_CANARY,
         timeBasedCanary: {
-          // Shift 20% of prod traffic, then wait 5 minutes
+          // Shift 20% of prod traffic, then wait 15 minutes
           stepPercentage: 20,
           bakeTimeMins: 5
         }
       },
       additionalOptions: {
-        // After canary period, shift 100% of prod traffic, then wait 3 minutes
-        terminationWaitTimeInMinutes: 3
+        // After canary period, shift 100% of prod traffic, then wait 30 minutes
+        terminationWaitTimeInMinutes: 30
       },
       serviceRole: roleLogicalId,
       applications: [{
@@ -419,4 +415,5 @@ export class BlueGreenEcsDeployStack extends cdk.Stack {
 
     return trafficRoute;
   }
-}*/
+}
+*/

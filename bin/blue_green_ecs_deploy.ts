@@ -15,12 +15,12 @@ new ApplicationStack(app, 'FeApplicaionStack', {
   //alb: serviceStack.Alb,
   vpc: serviceStack.Vpc,
   cluster: serviceStack.Cluster,
-  imageTag: "fe1",
-  prodPort: 80,
-  testPort: 9001,
+  //imageTag: "fe1",
+  //prodPort: 80,
+  //testPort: 9001,
 });
 
-
+/*
 new ApplicationStack(app, 'BeApplicaionStack', {
   //alb: serviceStack.Alb,
   vpc: serviceStack.Vpc,
@@ -28,6 +28,6 @@ new ApplicationStack(app, 'BeApplicaionStack', {
   imageTag: "be2",
   prodPort: 81,
   testPort: 9002,
-});
+});*/
 
 

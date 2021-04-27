@@ -9,9 +9,9 @@ export interface ApplicationProps extends cdk.StackProps{
   //alb: elb.ApplicationLoadBalancer;
   vpc: ec2.Vpc;
   cluster: ecs.Cluster;
-  imageTag: string;
-  prodPort: number;
-  testPort: number;
+  //imageTag: string;
+  //prodPort: number;
+  //testPort: number;
 }
 
 export class ApplicationStack extends cdk.Stack {
@@ -34,8 +34,22 @@ export class ApplicationStack extends cdk.Stack {
       }
     });
 
+    /*
+    const vpc = new ec2.Vpc(this, "vpc-1");
+
+    // Create an ECS cluster
+    const cluster = new ecs.Cluster(this, 'EcsCluster-1', {
+      vpc: vpc,
+    });*/
+
+    // Add capacity to it
+    props.cluster.addCapacity('EcsAutoScalingGroupCapacity-1', {
+      instanceType: new ec2.InstanceType("t2.micro"),
+      desiredCapacity: 1,
+    });
+
     const imageRepo = ecr.Repository.fromRepositoryName(this, 'repo', 'randserver');
-    const tag = props.imageTag;
+    const tag = "fe1";
     const image = ecs.ContainerImage.fromEcrRepository(imageRepo, tag)
 
     // create a load balancer
@@ -124,7 +138,7 @@ export class ApplicationStack extends cdk.Stack {
     });*/
 
     const testListener = alb.addListener("testListener", {
-      port: props.testPort,
+      port: 9002,
       protocol: elb.ApplicationProtocol.HTTP,
       open: true,
       defaultAction: elb.ListenerAction.weightedForward([{

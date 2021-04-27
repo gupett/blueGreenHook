@@ -5,7 +5,7 @@ import * as elb from '@aws-cdk/aws-elasticloadbalancingv2';
 
 
 export class ServiceStack extends cdk.Stack {
-  public readonly Alb: elb.ApplicationLoadBalancer;
+  //public readonly Alb: elb.ApplicationLoadBalancer;
   public readonly Vpc: ec2.Vpc;
   public readonly Cluster: ecs.Cluster;
   
@@ -13,6 +13,7 @@ export class ServiceStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
+    
     // The code that defines your stack goes here
     const vpc = new ec2.Vpc(this, "vpc-1");
     this.Vpc = vpc;
@@ -23,11 +24,12 @@ export class ServiceStack extends cdk.Stack {
     });
     this.Cluster = cluster;
 
+    /*
     // Add capacity to it
     cluster.addCapacity('EcsAutoScalingGroupCapacity-1', {
       instanceType: new ec2.InstanceType("t2.micro"),
       desiredCapacity: 1,
-    });
+    });*/
     
     /*
     // create a load balancer
